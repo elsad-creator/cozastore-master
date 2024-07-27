@@ -313,29 +313,26 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // Ürün verileri
 const products = [
-    { imgSrc: 'images/case3.png', name: 'Esprit Ruffle Shirt', price: 16.64, category: 'PC' },
-    { imgSrc: 'images/case4.png', name: 'Herschel supply', price: 35.31, category: 'PC' },
-    { imgSrc: 'images/computer-case.png', name: 'Only Check Trouser', price: 25.50, category: 'PC' },
-    { imgSrc: 'images/computer-case2.png', name: 'Classic Trench Coat', price: 75.00, category: 'PC' },
-    { imgSrc: 'images/gamemax-hype.png', name: 'Front Pocket Jumper', price: 34.75, category: 'PC' },
-    { imgSrc: 'images/gamemax-autobot.png', name: 'Vintage Inspired Classic', price: 93.20, category: 'PC' },
-    { imgSrc: 'images/gamemax-infinity.png', name: 'Shirt in Stretch Cotton', price: 52.66, category: 'PC' },
-    { imgSrc: 'images/laptop.png', name: 'Pieces Metallic Printed', price: 18.96, category: 'Laptops' },
-    { imgSrc: 'images/lian-case.png', name: 'Converse All Star Hi Plimsolls', price: 75.00, category: 'PC' },
-    { imgSrc: 'images/omen-case.png', name: 'Femme T-Shirt In Stripe', price: 25.85, category: 'PC' },
-    { imgSrc: 'images/laptop5.png', name: 'Herschel supply', price: 63.16, category: 'Laptops' },
-    { imgSrc: 'images/laptop6.png', name: 'Herschel supply', price: 63.15, category: '' },
-    { imgSrc: 'images/laptop7.png', name: 'T-Shirt with Sleeve', price: 18.49, category: 'Laptops' },
-    { imgSrc: 'images/asusrog.png', name: 'Pretty Little Thing', price: 54.79, category: 'Laptops' },
-    { imgSrc: 'images/msi.png', name: 'Mini Silver Mesh Watch', price: 86.85, category: 'Laptops' },
-    { imgSrc: 'images/notebook.png', name: 'Square Neck Back', price: 31.64, category: 'Laptops' }
+    { imgSrc: 'images/case3.png', name: 'Esprit Ruffle Shirt', price: '$16.64', category: 'PC' },
+    { imgSrc: 'images/case4.png', name: 'Herschel supply', price: '$35.31', category: 'PC' },
+    { imgSrc: 'images/computer-case.png', name: 'Only Check Trouser', price: '$25.50', category: 'PC' },
+    { imgSrc: 'images/computer-case2.png', name: 'Classic Trench Coat', price: '$75.00', category: 'PC' },
+    { imgSrc: 'images/gamemax-hype.png', name: 'Front Pocket Jumper', price: '$34.75', category: 'PC' },
+    { imgSrc: 'images/gamemax-autobot.png', name: 'Vintage Inspired Classic', price: '$93.20', category: 'PC' },
+    { imgSrc: 'images/gamemax-infinity.png', name: 'Shirt in Stretch Cotton', price: '$52.66', category: 'PC' },
+    { imgSrc: 'images/laptop.png', name: 'Pieces Metallic Printed', price: '$18.96', category: 'Laptops' },
+    { imgSrc: 'images/lian-case.png', name: 'Converse All Star Hi Plimsolls', price: '$75.00', category: 'PC' },
+    { imgSrc: 'images/omen-case.png', name: 'Femme T-Shirt In Stripe', price: '$25.85', category: 'PC' },
+    { imgSrc: 'images/laptop5.png', name: 'Herschel supply', price: '$63.16', category: 'Laptops' },
+    { imgSrc: 'images/laptop6.png', name: 'Herschel supply', price: '$63.15', category: '' },
+    { imgSrc: 'images/laptop7.png', name: 'T-Shirt with Sleeve', price: '$18.49', category: 'Laptops' },
+    { imgSrc: 'images/asusrog.png', name: 'Pretty Little Thing', price: '$54.79', category: 'Laptops' },
+    { imgSrc: 'images/msi.png', name: 'Mini Silver Mesh Watch', price: '$86.85', category: 'Laptops' },
+    { imgSrc: 'images/notebook.png', name: 'Square Neck Back', price: '$31.64', category: 'Laptops' }
 ];
 
 // Ürün listesini oluştur
 const productList = document.getElementById('product-list');
-const cartList = document.querySelector('.header-cart-wrapitem');
-const totalPriceElement = document.getElementById('total-price');
-let cart = [];
 
 // Her bir ürün için HTML oluştur
 products.forEach(product => {
@@ -349,7 +346,7 @@ products.forEach(product => {
                 <div class="block2-txt flex-w flex-t p-t-14">
                     <div class="block2-txt-child1 flex-col-l">
                         <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">${product.name}</a>
-                        <span class="stext-105 cl3">$${product.price.toFixed(2)}</span>
+                        <span class="stext-105 cl3">${product.price}</span>
                     </div>
                     <div class="block2-txt-child2 flex-r p-t-3">
                         <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
@@ -357,7 +354,6 @@ products.forEach(product => {
                             <img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
                         </a>
                     </div>
-                    <button onclick="addToCart('${product.name}', '${product.imgSrc}', ${product.price})">Sepete Ekle</button>
                 </div>
             </div>
         </div>
@@ -365,70 +361,3 @@ products.forEach(product => {
     productList.innerHTML += productHTML;
 });
 
-function addToCart(name, imgSrc, price) {
-    const existingProduct = cart.find(product => product.name === name);
-    if (existingProduct) {
-        existingProduct.quantity += 1;
-    } else {
-        cart.push({ name, imgSrc, price, quantity: 1 });
-    }
-    renderCart();
-}
-
-function removeFromCart(name) {
-    const existingProduct = cart.find(product => product.name === name);
-    if (existingProduct.quantity > 1) {
-        existingProduct.quantity -= 1;
-    } else {
-        cart = cart.filter(product => product.name !== name);
-    }
-    renderCart();
-}
-
-function renderCart() {
-    cartList.innerHTML = '';
-    let totalPrice = 0;
-    
-    cart.forEach(product => {
-        const cartItemHTML = `
-            <li class="header-cart-item flex-w flex-t m-b-12" data-item-name="${product.name}">
-                <div class="header-cart-item-img">
-                    <img src="${product.imgSrc}" alt="${product.name}">
-                </div>
-
-                <div class="header-cart-item-txt p-t-8">
-                    <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                        ${product.name}
-                    </a>
-
-                    <span class="header-cart-item-info">
-                        $${(product.price * product.quantity).toFixed(2)}
-                    </span>
-
-                    <div class="header-cart-item-quantity">
-                        <button class="quantity-minus" onclick="updateQuantity('${product.name}', -1)" data-price="${product.price}">-</button>
-                        <input type="text" class="quantity" value="${product.quantity}" readonly data-price="${product.price}">
-                        <button class="quantity-plus" onclick="updateQuantity('${product.name}', 1)" data-price="${product.price}">+</button>
-                        <button class="delete-item" onclick="removeFromCart('${product.name}')"><i class="zmdi zmdi-delete"></i></button>
-                    </div>
-                </div>
-            </li>
-        `;
-        cartList.innerHTML += cartItemHTML;
-        totalPrice += product.price * product.quantity;
-    });
-
-    totalPriceElement.textContent = totalPrice.toFixed(2);
-}
-
-function updateQuantity(name, change) {
-    const product = cart.find(product => product.name === name);
-    if (product) {
-        product.quantity += change;
-        if (product.quantity <= 0) {
-            removeFromCart(name);
-        } else {
-            renderCart();
-        }
-    }
-}
