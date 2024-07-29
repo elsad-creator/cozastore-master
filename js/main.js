@@ -110,21 +110,7 @@
 
 
     /*==================================================================
-    [ Show / hide modal search ]*/
-    $('.js-show-modal-search').on('click', function(){
-        $('.modal-search-header').addClass('show-modal-search');
-        $(this).css('opacity','0');
-    });
-
-    $('.js-hide-modal-search').on('click', function(){
-        $('.modal-search-header').removeClass('show-modal-search');
-        $('.js-show-modal-search').css('opacity','1');
-    });
-
-    $('.container-search-header').on('click', function(e){
-        e.stopPropagation();
-    });
-
+   
 
     /*==================================================================
     [ Isotope ]*/
@@ -313,51 +299,145 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // Ürün verileri
 const products = [
-    { imgSrc: 'images/case3.png', name: 'Esprit Ruffle Shirt', price: '$16.64', category: 'PC' },
-    { imgSrc: 'images/case4.png', name: 'Herschel supply', price: '$35.31', category: 'PC' },
-    { imgSrc: 'images/computer-case.png', name: 'Only Check Trouser', price: '$25.50', category: 'PC' },
-    { imgSrc: 'images/computer-case2.png', name: 'Classic Trench Coat', price: '$75.00', category: 'PC' },
-    { imgSrc: 'images/gamemax-hype.png', name: 'Front Pocket Jumper', price: '$34.75', category: 'PC' },
-    { imgSrc: 'images/gamemax-autobot.png', name: 'Vintage Inspired Classic', price: '$93.20', category: 'PC' },
-    { imgSrc: 'images/gamemax-infinity.png', name: 'Shirt in Stretch Cotton', price: '$52.66', category: 'PC' },
-    { imgSrc: 'images/laptop.png', name: 'Pieces Metallic Printed', price: '$18.96', category: 'Laptops' },
-    { imgSrc: 'images/lian-case.png', name: 'Converse All Star Hi Plimsolls', price: '$75.00', category: 'PC' },
-    { imgSrc: 'images/omen-case.png', name: 'Femme T-Shirt In Stripe', price: '$25.85', category: 'PC' },
-    { imgSrc: 'images/laptop5.png', name: 'Herschel supply', price: '$63.16', category: 'Laptops' },
-    { imgSrc: 'images/laptop6.png', name: 'Herschel supply', price: '$63.15', category: '' },
-    { imgSrc: 'images/laptop7.png', name: 'T-Shirt with Sleeve', price: '$18.49', category: 'Laptops' },
-    { imgSrc: 'images/asusrog.png', name: 'Pretty Little Thing', price: '$54.79', category: 'Laptops' },
-    { imgSrc: 'images/msi.png', name: 'Mini Silver Mesh Watch', price: '$86.85', category: 'Laptops' },
-    { imgSrc: 'images/notebook.png', name: 'Square Neck Back', price: '$31.64', category: 'Laptops' }
+    { imgSrc: 'images/case3.png', name: 'Esprit Ruffle Shirt', price: 16.64, category: 'PC' },
+    { imgSrc: 'images/case4.png', name: 'Herschel supply', price: 35.31, category: 'PC' },
+    { imgSrc: 'images/computer-case.png', name: 'Only Check Trouser', price: 25.50, category: 'PC' },
+    { imgSrc: 'images/computer-case2.png', name: 'Classic Trench Coat', price: 75.00, category: 'PC' },
+    { imgSrc: 'images/gamemax-hype.png', name: 'Front Pocket Jumper', price: 34.75, category: 'PC' },
+    { imgSrc: 'images/gamemax-autobot.png', name: 'Vintage Inspired Classic', price: 93.20, category: 'PC' },
+    { imgSrc: 'images/gamemax-infinity.png', name: 'Shirt in Stretch Cotton', price: 52.66, category: 'PC' },
+    { imgSrc: 'images/laptop.png', name: 'Pieces Metallic Printed', price: 18.96, category: 'Laptops' },
+    { imgSrc: 'images/lian-case.png', name: 'Converse All Star Hi Plimsolls', price: 75.00, category: 'PC' },
+    { imgSrc: 'images/omen-case.png', name: 'Femme T-Shirt In Stripe', price: 25.85, category: 'PC' },
+    { imgSrc: 'images/laptop5.png', name: 'Herschel supply', price: 63.16, category: 'Laptops' },
+    { imgSrc: 'images/laptop6.png', name: 'Herschel supply', price: 63.15, category: '' },
+    { imgSrc: 'images/laptop7.png', name: 'T-Shirt with Sleeve', price: 18.49, category: 'Laptops' },
+    { imgSrc: 'images/asusrog.png', name: 'Pretty Little Thing', price: 54.79, category: 'Laptops' },
+    { imgSrc: 'images/msi.png', name: 'Mini Silver Mesh Watch', price: 86.85, category: 'Laptops' },
+    { imgSrc: 'images/notebook.png', name: 'Square Neck Back', price: 31.64, category: 'Laptops' }
 ];
-
 // Ürün listesini oluştur
-const productList = document.getElementById('product-list');
 
-// Her bir ürün için HTML oluştur
-products.forEach(product => {
-    const productHTML = `
-        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category}">
+const productList = document.getElementById('product-list');
+const cartList = document.querySelector('.header-cart-wrapitem');
+const totalPriceElement = document.getElementById('total-price');
+const cartCountElement = document.getElementById('cart-count');
+let cart = [];
+
+// Ürünleri listele
+function displayProducts(productsToDisplay) {
+    productList.innerHTML = '';
+    productsToDisplay.forEach(product => {
+        const productHTML = `
+        <div class="product col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category}">
             <div class="block2">
                 <div class="block2-pic hov-img0">
-                    <img src="${product.imgSrc}" alt="IMG-PRODUCT">
-                    <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">Quick View</a>
+                    <img src="${product.imgSrc}" alt="${product.name}">
+                </div>
+                <div class="card-btns">
+                    <button class="add-to-cart-btn button-13" onclick="addToCart(${products.indexOf(product)})">Add to Cart</button>
                 </div>
                 <div class="block2-txt flex-w flex-t p-t-14">
                     <div class="block2-txt-child1 flex-col-l">
-                        <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">${product.name}</a>
-                        <span class="stext-105 cl3">${product.price}</span>
-                    </div>
-                    <div class="block2-txt-child2 flex-r p-t-3">
-                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                            <img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
+                        <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                            ${product.name}
                         </a>
+                        <span class="stext-105 cl3">
+                            $${product.price.toFixed(2)}
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-    `;
-    productList.innerHTML += productHTML;
+        `;
+        productList.innerHTML += productHTML;
+    });
+}
+
+// Initial product display
+displayProducts(products);
+
+// Sepete ürün ekle
+function addToCart(index) {
+    const product = products[index];
+    const cartItemIndex = cart.findIndex(item => item.product.name === product.name);
+
+    if (cartItemIndex === -1) {
+        cart.push({ product, quantity: 1 });
+    } else {
+        cart[cartItemIndex].quantity += 1;
+    }
+
+    updateCart();
+}
+
+// Sepeti güncelle
+function updateCart() {
+    cartList.innerHTML = '';
+    let totalPrice = 0;
+    cart.forEach((item, index) => {
+        const cartItemHTML = `
+            <li class="header-cart-item flex-w flex-t m-b-12">
+                <div class="header-cart-item-img">
+                    <img src="${item.product.imgSrc}" alt="${item.product.name}">
+                </div>
+                <div class="header-cart-item-txt p-t-8">
+                    <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                        ${item.product.name}
+                    </a>
+                    <div class="delete-price-flex">
+                        <span class="header-cart-item-info">
+                            $${(item.product.price * item.quantity).toFixed(2)}
+                        </span>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="decreaseQuantity(${index})"><i class="fas fa-chevron-down"></i></button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="increaseQuantity(${index})"><i class="fas fa-chevron-up"></i></button>
+                            <button class="remove-item-btn" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        `;
+        cartList.innerHTML += cartItemHTML;
+        totalPrice += item.product.price * item.quantity;
+    });
+    totalPriceElement.textContent = totalPrice.toFixed(2);
+    cartCountElement.textContent = cart.length;
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1); // Remove item from the cart
+    updateCart(); // Update cart display
+}
+
+function increaseQuantity(index) {
+    cart[index].quantity += 1;
+    updateCart();
+}
+
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+    } else {
+        cart.splice(index, 1); // Remove item if quantity is 0
+    }
+    updateCart();
+}
+
+// Sepet açma/kapama
+const cartIcon = document.getElementById('cart-icon');
+const wrapHeaderCart = document.querySelector('.wrap-header-cart');
+const hideCart = document.querySelectorAll('.js-hide-cart');
+
+cartIcon.addEventListener('click', () => {
+    wrapHeaderCart.classList.toggle('show-header-cart');
 });
+
+hideCart.forEach(btn => {
+    btn.addEventListener('click', () => {
+        wrapHeaderCart.classList.remove('show-header-cart');
+    });
+});
+    
 
